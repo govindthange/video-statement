@@ -13,23 +13,64 @@
         <br /><br />
         <h1 style="text-align: center;">Video Report Generator</h1>
         <form action="/generate" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <input type="file" name="file" />
+            <div class="form-row">
+                <div class="col">
+                    <label for="clientName">Client Name:</label>
+                    <input class="form-control" name="clientName" value="Mr. Venkat Murthy"></input>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="to">To:</label>
-                <select class="form-control" name="to">
-            <option>mp4</option>
-            <option>flv</option>
-            <option>avi</option>
-            <option>webm</option>
-            <option>mov</option>
-          </select>
+            <div class="form-row">
+                <div class="col">
+                    <label for="currentValue">Current Value:</label>
+                    <input class="form-control" name="currentValue" value="5,00,000"></input>
+                </div>
+                <div class="col">
+                    <label for="investedValue">Invested Value:</label>
+                    <input class="form-control" name="investedValue" value="4,00,00"></input>
+                </div>
+            </div>
+            <br />
+            <div class="form-row">
+                <div class="col">
+                    <label for="clips">Choose Clips:</label>
+                    <select multiple class="form-control" name="clips">
+                        <option>Welcome</option>
+                        <option>Portfolio Summary</option>
+                        <option>Insurance Summary</option>
+                        <option>Market Summary</option>
+                        <option>Holidings</option>
+                        <option>Bank Accounts</option>
+                        <option>Thank You Note</option>
+                    </select>
+                </div>
+            </div>
+            <br />
+            <div class="form-row">
+                <div class="col">
+                    <label for="theme">Choose Theme:</label>
+                    <select class="form-control" name="theme">
+                        <option>Custom (Upload Video)</option>
+                        <option>Wild Life</option>
+                        <option>City</option>
+                        <option>Mountains</option>
+                    </select>
+                    <input type="file" name="file" />
+                </div>
+                <div class="col">
+                    <label for="to">Video Statement Format:</label>
+                    <select class="form-control" name="to">
+                        <option>mp4</option>
+                        <option>flv</option>
+                        <option>avi</option>
+                        <option>webm</option>
+                        <option>mov</option>
+                    </select>
+                </div>
             </div>
             <br />
             <div class="form-group">
-                <button class="btn btn-danger btn-block">
-            Generate Video Statement
+                <button class="btn btn-primary btn-block">
+            Generate Statement
           </button>
             </div>
         </form>
