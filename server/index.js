@@ -1,11 +1,12 @@
 const express = require('express')
+const ffmpeg = require("fluent-ffmpeg");
 const fileUpload = require("express-fileupload");
 const app = express();
 
 app.use(
     fileUpload({
         useTempFiles: true,
-        tempFileDir: "/tmp/",
+        tempFileDir: "/uploads/",
     })
 );
 
@@ -16,6 +17,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
 app.use(bodyParser.json());
+
+ffmpeg.setFfmpegPath("C:/ffmpeg/bin/ffmpeg.exe");
+ffmpeg.setFfprobePath("C:/ffmpeg/bin");
+ffmpeg.setFlvtoolPath("C:/flvtool");
+console.log(ffmpeg);
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
@@ -39,6 +45,13 @@ app.post("/generate", (req, res) => {
         console.log("File Uploaded successfully");
     });
 
-    res.send('Feature to generate video statement is pending...');
-
+    ffmpeg("uploads/" + file.name)
+        .withOutputFormat(to)
+        .on("end", function(stdout, stderr) {
+            console.log("Finished");
+            res.download(__dirname + fileName, function(err) {
+                if (err) throw err;
+            });
+        })
+        .saveToFile(__dirname + fileName);
 });
