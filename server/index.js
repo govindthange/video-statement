@@ -31,6 +31,10 @@ app.listen(5000, () => {
 })
 
 app.post("/generate", (req, res) => {
+    let clientName = req.body.clientName;
+    let currentValue = req.body.currentValue;
+    let investedValue = req.body.investedValue;
+
     let to = req.body.to;
     let file = req.files.file;
     let fileName = `output.${to}`;
@@ -47,6 +51,31 @@ app.post("/generate", (req, res) => {
 
     ffmpeg("uploads/" + file.name)
         .withOutputFormat(to)
+        .videoFilter({
+            filter: 'drawtext',
+            options: {
+                fontfile: 'Lucida Grande.ttf',
+                text: clientName,
+                x: 10,
+                y: 10
+            }
+        }, {
+            filter: 'drawtext',
+            options: {
+                fontfile: 'Lucida Grande.ttf',
+                text: investedValue,
+                x: 10,
+                y: 40
+            }
+        }, {
+            filter: 'drawtext',
+            options: {
+                fontfile: 'Lucida Grande.ttf',
+                text: currentValue,
+                x: 10,
+                y: 70
+            }
+        })
         .on("end", function(stdout, stderr) {
             console.log("Finished");
             res.download(__dirname + fileName, function(err) {
