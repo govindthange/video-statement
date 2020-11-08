@@ -51,6 +51,25 @@ app.post("/generate", (req, res) => {
             console.log("Finished");
             res.download(__dirname + fileName, function(err) {
                 if (err) throw err;
+                /*
+                fs.unlink(__dirname + fileName, function(err) {
+                    if (err) throw err;
+                    console.log("File deleted");
+                });
+                */
+            });
+            /*
+            fs.unlink("uploads/" + file.name, function(err) {
+                if (err) throw err;
+                console.log("File deleted");
+            });
+            */
+        })
+        .on("error", function(err) {
+            console.log("an error happened: " + err.message);
+            fs.unlink("uploads/" + file.name, function(err) {
+                if (err) throw err;
+                console.log("File deleted");
             });
         })
         .saveToFile(__dirname + fileName);
