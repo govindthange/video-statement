@@ -52,8 +52,7 @@ app.post("/generate", (req, res) => {
 
     ffmpeg("uploads/" + file.name)
         .withOutputFormat(to)
-        .input('uploads/sample-logo.png')
-        .addInput('uploads/hello.mp3')
+        .input('templates/logo-sample.png')
         //.videoFilter(textFilter1, textFilter2, textFilter3, textFilter4)
         .addOption([
             '-strict -2'
@@ -97,6 +96,8 @@ app.post("/generate", (req, res) => {
             });
         })
         .saveToFile(__dirname + fileName);
+
+    addVoice(__dirname + fileName, __dirname + "\\templates\\tts-sample.mp3");
 });
 
 function getOverlayFilter(startTime, duration, x, y, ip, op) {
@@ -135,4 +136,21 @@ function getAlpha(fadeInStartTime, fadeInLength, opaqueDuration, fadeOutLength) 
     let t3 = opaqueDuration;
     let t4 = fadeOutLength;
     return `if(lt(t,${t1}),0,if(lt(t,${t1+t2}),(t-${t1})/${t2},if(lt(t,${t1+t2+t3}),1,if(lt(t,${t1+t2+t3+t4}),(${t4}-(t${-t1-t2-t3}))/${t4},0))))`;
+}
+
+function addVoice(videoPath, audioPath) {
+    ffmpeg(videoPath)
+        .input(audioPath)
+        .complexFilter([{
+            filter: 'amix',
+            options: { inputs: 1, duration: 'longest' }
+        }])
+        .on('start', function(commandLine) {
+            console.log('Adding voice...');
+            //console.log('Command line: ' + commandLine);
+        })
+        .on('end', async function(output) {
+            console.log(output, 'Finished adding voice.')
+        })
+        .saveToFile(__dirname + '\\outputs\\video-with-voice.mp4');
 }
