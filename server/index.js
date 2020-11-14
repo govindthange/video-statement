@@ -2,6 +2,7 @@ const express = require('express')
 const ffmpeg = require("fluent-ffmpeg");
 const fileUpload = require("express-fileupload");
 const app = express();
+const gTTS = require('gtts');
 
 app.use(
     fileUpload({
@@ -52,7 +53,7 @@ app.post("/generate", (req, res) => {
 
     ffmpeg("uploads/" + file.name)
         .withOutputFormat(to)
-        .input('templates/logo-sample.png')
+        .input('templates/pie.png')
         //.videoFilter(textFilter1, textFilter2, textFilter3, textFilter4)
         .addOption([
             '-strict -2'
@@ -97,7 +98,15 @@ app.post("/generate", (req, res) => {
         })
         .saveToFile(__dirname + fileName);
 
-    addVoice(__dirname + fileName, __dirname + "\\templates\\tts-sample.mp3");
+    let text = `Hello ${clientName}! You invested ${investedValue} Rupees and your current value is ${currentValue} Rupees. ${thankYouNote}`;
+    var gtts = new gTTS(text, 'en');
+    gtts.save(__dirname + '\\templates\\tts-sample.mp3', function(err, result) {
+        if (err) { throw new Error(err) }
+        console.log(`Success! Open file [${__dirname}\\templates\\tts-sample.mp3] to hear the result.`);
+
+        addVoice(__dirname + fileName, __dirname + '\\templates\\tts-sample.mp3');
+    });
+
 });
 
 function getOverlayFilter(startTime, duration, x, y, ip, op) {
